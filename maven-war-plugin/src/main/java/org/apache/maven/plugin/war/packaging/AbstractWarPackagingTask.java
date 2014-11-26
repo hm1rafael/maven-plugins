@@ -22,6 +22,7 @@ package org.apache.maven.plugin.war.packaging;
 import java.io.File;
 import java.io.IOException;
 
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.input.XmlStreamReader;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.plugin.MojoExecutionException;
@@ -92,21 +93,12 @@ public abstract class AbstractWarPackagingTask
     protected void copyFiles( String sourceId, WarPackagingContext context, File sourceBaseDir, PathSet sourceFilesSet,
                               String targetPrefix, boolean filtered )
         throws IOException, MojoExecutionException
-    {
+    {	
+    	WebFileProcessor wfProcessor = new WebFileProcessor(context);
         for ( String fileToCopyName : sourceFilesSet.paths() )
         {
-            final File sourceFile = new File( sourceBaseDir, fileToCopyName );
-
-            String destinationFileName;
-            if ( targetPrefix == null )
-            {
-                destinationFileName = fileToCopyName;
-            }
-            else
-            {
-                destinationFileName = targetPrefix + fileToCopyName;
-            }
-
+            final File sourceFile = wfProcessor.createSourceFile(sourceBaseDir, fileToCopyName );
+            String destinationFileName = wfProcessor.getDestinationName(targetPrefix, fileToCopyName);
             if ( filtered && !context.isNonFilteredExtension( sourceFile.getName() ) )
             {
                 copyFilteredFile( sourceId, context, sourceFile, destinationFileName );
@@ -117,6 +109,7 @@ public abstract class AbstractWarPackagingTask
             }
         }
     }
+
 
     /**
      * Copies the files if possible as is.
