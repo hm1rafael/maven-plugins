@@ -1,7 +1,7 @@
-Apache Maven Plugins
+Apache Maven Plugins 
 ====================
 
-http://maven.apache.org/plugins/
+Modifications from original:
 
-Users list: users@maven.apache.org
-Developers list: dev@maven.apache.org
+Apache-war-plugin:
+Versioning JS files on package, using the project version
